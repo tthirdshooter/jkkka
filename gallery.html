@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Gallery</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #1a1a1a; /* Dark theme for a "gallery" feel */
+            color: white;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        h1 { text-align: center; margin-bottom: 40px; }
+
+        /* --- Gallery Grid --- */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .gallery img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        .gallery img:hover {
+            opacity: 0.8;
+            transform: translateY(-5px);
+        }
+
+        /* --- Lightbox / Modal --- */
+        #lightbox {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        #lightbox img {
+            max-width: 90%;
+            max-height: 80%;
+            border: 3px solid white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            border-radius: 4px;
+        }
+
+        /* Close Button */
+        #close-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 50px;
+            color: white;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        #caption {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Interactive Gallery</h1>
+
+    <div class="gallery">
+        <img src="https://picsum.photos/800/600?random=1" alt="Mountain Peak" onclick="openLightbox(this)">
+        <img src="https://picsum.photos/800/600?random=2" alt="Forest Trail" onclick="openLightbox(this)">
+        <img src="https://picsum.photos/800/600?random=3" alt="Ocean Waves" onclick="openLightbox(this)">
+        <img src="https://picsum.photos/800/600?random=4" alt="City Lights" onclick="openLightbox(this)">
+        <img src="https://picsum.photos/800/600?random=5" alt="Desert Dunes" onclick="openLightbox(this)">
+        <img src="https://picsum.photos/800/600?random=6" alt="Starry Sky" onclick="openLightbox(this)">
+    </div>
+
+    <div id="lightbox">
+        <span id="close-btn" onclick="closeLightbox()">&times;</span>
+        <img id="lightbox-img" src="" alt="Large View">
+        <div id="caption"></div>
+    </div>
+
+    <script>
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const captionText = document.getElementById('caption');
+
+        function openLightbox(element) {
+            lightbox.style.display = "flex";
+            lightboxImg.src = element.src; // Takes the clicked image's URL
+            captionText.innerHTML = element.alt; // Takes the clicked image's Alt text
+        }
+
+        function closeLightbox() {
+            lightbox.style.display = "none";
+        }
+
+        // Close lightbox if user clicks anywhere outside the image
+        lightbox.onclick = function(e) {
+            if (e.target !== lightboxImg) {
+                closeLightbox();
+            }
+        };
+    </script>
+
+</body>
+</html>
