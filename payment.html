@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JKKKA Official Registration & Payment</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        :root { --jk-blue: #003366; --jk-red: #c62828; --green: #27ae60; }
+        body { font-family: 'Segoe UI', sans-serif; background: #d1d8e0; padding: 20px; display: flex; justify-content: center; }
+        .wrapper { width: 100%; max-width: 500px; }
+        
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-top: 8px solid var(--jk-blue); }
+        h2 { color: var(--jk-blue); text-align: center; margin: 0; }
+        .tagline { text-align: center; color: var(--jk-red); font-weight: bold; font-size: 11px; margin-bottom: 20px; }
+        
+        label { display: block; margin-top: 12px; font-weight: bold; font-size: 13px; }
+        input, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        
+        /* Payment Section */
+        .payment-box { background: #f9f9f9; border: 2px dashed #bbb; padding: 15px; margin-top: 20px; border-radius: 8px; text-align: center; }
+        .payment-box h4 { margin: 0 0 10px 0; color: var(--green); }
+        .upi-qr-placeholder { width: 150px; height: 150px; background: #eee; margin: 10px auto; display: flex; align-items: center; justify-content: center; border: 1px solid #ddd; }
+
+        .btn-reg { width: 100%; background: var(--jk-blue); color: white; border: none; padding: 15px; margin-top: 25px; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; }
+
+        /* ID Card Visual */
+        #idDisplay { display: none; text-align: center; }
+        .id-card-visual { 
+            width: 400px; height: 250px; background: #fff; border: 1px solid #000; border-radius: 12px; 
+            margin: 20px auto; position: relative; text-align: left; overflow: hidden;
+            border-top: 15px solid var(--jk-blue);
+        }
+        .id-header { background: #f1f1f1; padding: 8px; text-align: center; font-weight: 900; color: var(--jk-blue); font-size: 14px; border-bottom: 2px solid var(--jk-blue); }
+        .id-content { display: flex; padding: 15px; gap: 15px; }
+        .photo-box { width: 95px; height: 115px; border: 2px solid var(--jk-blue); overflow: hidden; }
+        .photo-box img { width: 100%; height: 100%; object-fit: cover; }
+        .info-box { flex: 1; font-size: 13px; line-height: 1.6; }
+        #qrcode { position: absolute; top: 55px; right: 15px; }
+        .payment-status { position: absolute; bottom: 50px; right: 15px; color: var(--green); font-size: 10px; font-weight: bold; border: 1px solid var(--green); padding: 2px 5px; }
+        .sig-container { display: flex; justify-content: space-between; padding: 0 20px; position: absolute; bottom: 15px; width: 100%; box-sizing: border-box; }
+        .sig-box { text-align: center; width: 40%; border-top: 1px solid #333; padding-top: 5px; font-size: 9px; font-weight: bold; }
+
+        @media print { .no-print { display: none; } body { background: white; } }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <div id="formSection" class="card">
+        <h2>J&K Kho-Kho Association</h2>
+        <div class="tagline">OFFICIAL REGISTRATION 2026</div>
+        
+        <form id="mainForm">
+            <label>Upload Photo</label>
+            <input type="file" id="userPhoto" accept="image/*" required>
+
+            <label>Full Name</label>
+            <input type="text" id="userName" required>
+
+            <label>District</label>
+            <select id="userDist" required>
+                <option value="">-- Select --</option>
+                <option>Jammu</option><option>Srinagar</option><option>Samba</option><option>Kathua</option><option>Udhampur</option>
+                </select>
+
+            <div class="payment-box">
+                <h4>Registration Fee: ₹100</h4>
+                <p style="font-size: 11px;">Scan QR to pay via Any UPI App (GPay/PhonePe)</p>
+                <div class="upi-qr-placeholder">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=9149509617@ptsbi&pn=JKKKA&am=100" alt="UPI QR">
+                </div>
+                <label>Enter Transaction ID / UTR No.*</label>
+                <input type="text" id="utrNo" placeholder="12-digit Number" required>
+            </div>
+
+            <button type="submit" class="btn-reg" id="submitBtn">Verify Payment & Generate ID</button>
+        </form>
+    </div>
+
+    <div id="idDisplay">
+        <div class="id-card-visual">
+            <div class="id-header">JAMMU KASHMIR KHO-KHO ASSOCIATION</div>
+            <div class="id-content">
+                <div class="photo-box"><img id="cardImg" src=""></div>
+                <div class="info-box">
+                    <div><b>NAME:</b> <span id="resName"></span></div>
+                    <div><b>DISTRICT:</b> <span id="resDist"></span></div>
+                    <div><b>ID:</b> <span id="resID"></span></div>
+                    <div style="margin-top:5px; color:var(--jk-blue); font-size:10px;">FEES PAID: VERIFIED</div>
+                </div>
+                <div id="qrcode"></div>
+                <div class="payment-status">PAID ONLINE</div>
+            </div>
+            <div class="sig-container">
+                <div class="sig-box">HOLDER SIGNATURE</div>
+                <div class="sig-box">GEN. SECRETARY</div>
+            </div>
+        </div>
+        <button onclick="window.print()" class="btn-reg no-print" style="background:#444;">Print Official ID</button>
+    </div>
+</div>
+
+<script>
+    document.getElementById('mainForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('submitBtn');
+        btn.innerText = "Verifying...";
+        btn.disabled = true;
+
+        const name = document.getElementById('userName').value;
+        const dist = document.getElementById('userDist').value;
+        const utr = document.getElementById('utrNo').value;
+        const photo = document.getElementById('userPhoto').files[0];
+        const uniqueID = "JKKKA/" + Math.floor(100000 + Math.random() * 900000);
+
+        // Send to Email
+        fetch("https://formspree.io/f/your@email.com", {
+            method: "POST",
+            body: JSON.stringify({
+                Name: name,
+                District: dist,
+                UTR_No: utr,
+                RegID: uniqueID,
+                Status: "Payment Pending Verification"
+            }),
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
+        }).finally(() => {
+            // Generate QR & Card
+            new QRCode(document.getElementById("qrcode"), { text: uniqueID, width: 50, height: 50 });
+            const reader = new FileReader();
+            reader.onload = (e) => document.getElementById('cardImg').src = e.target.result;
+            reader.readAsDataURL(photo);
+
+            document.getElementById('resName').innerText = name;
+            document.getElementById('resDist').innerText = dist;
+            document.getElementById('resID').innerText = uniqueID;
+
+            document.getElementById('formSection').style.display = 'none';
+            document.getElementById('idDisplay').style.display = 'block';
+        });
+    });
+</script>
+</body>
+</html>
