@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JKKKA Athlete Registration System</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        :root { --jk-blue: #003366; --jk-red: #c62828; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #d1d8e0; padding: 20px; display: flex; justify-content: center; }
+        .wrapper { width: 100%; max-width: 500px; }
+        
+        /* Form Section */
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-top: 8px solid var(--jk-blue); }
+        h2 { color: var(--jk-blue); text-align: center; margin: 0; font-size: 22px; }
+        .tagline { text-align: center; color: var(--jk-red); font-weight: bold; font-size: 11px; margin-bottom: 20px; }
+        
+        label { display: block; margin-top: 12px; font-weight: bold; font-size: 13px; color: #444; }
+        input, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        
+        .btn-reg { width: 100%; background: var(--jk-blue); color: white; border: none; padding: 15px; margin-top: 25px; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; }
+
+        /* ID Card Visual */
+        #idDisplay { display: none; text-align: center; }
+        .id-card-visual { 
+            width: 420px; height: 260px; background: #fff; border: 1px solid #000; border-radius: 12px; 
+            margin: 20px auto; position: relative; text-align: left; overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3); border-top: 15px solid var(--jk-blue);
+            background-image: linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%);
+        }
+        .id-header { background: #f1f1f1; padding: 8px; text-align: center; font-weight: 900; color: var(--jk-blue); font-size: 14px; border-bottom: 2px solid var(--jk-blue); }
+        
+        .id-content { display: flex; padding: 15px; gap: 15px; position: relative; }
+        .photo-box { width: 95px; height: 115px; border: 2px solid var(--jk-blue); background: #eee; overflow: hidden; z-index: 2; }
+        .photo-box img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .info-box { flex: 1; font-size: 13px; line-height: 1.6; z-index: 2; }
+        .info-box span { font-weight: bold; color: #555; width: 70px; display: inline-block; }
+        .val { color: #000; text-transform: uppercase; }
+        
+        /* QR Code Styling */
+        #qrcode { position: absolute; top: 15px; right: 15px; border: 1px solid #eee; padding: 2px; background: white; }
+        
+        .reg-no { position: absolute; top: 110px; right: 15px; color: var(--jk-red); font-weight: 900; font-size: 12px; }
+        
+        /* Signatures */
+        .sig-container { display: flex; justify-content: space-between; padding: 0 20px; position: absolute; bottom: 15px; width: 100%; box-sizing: border-box; }
+        .sig-box { text-align: center; width: 40%; border-top: 1px solid #333; padding-top: 5px; font-size: 9px; font-weight: bold; }
+
+        @media print { .no-print { display: none; } body { background: white; } .id-card-visual { box-shadow: none; border: 1px solid #000; } }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <div id="formSection" class="card">
+        <h2>J&K Kho-Kho Association</h2>
+        <div class="tagline">REGISTRATION PORTAL 2026-27</div>
+        
+        <form id="mainForm">
+            <label>Upload Passport Photo</label>
+            <input type="file" id="userPhoto" accept="image/*" required>
+
+            <label>Full Name</label>
+            <input type="text" id="userName" required>
+
+            <label>District</label>
+            <select id="userDist" required>
+                <option value="">-- Select --</option>
+                <option>Anantnag</option><option>Bandipora</option><option>Baramulla</option>
+                <option>Budgam</option><option>Doda</option><option>Ganderbal</option>
+                <option>Jammu</option><option>Kathua</option><option>Kishtwar</option>
+                <option>Kulgam</option><option>Kupwara</option><option>Poonch</option>
+                <option>Pulwama</option><option>Rajouri</option><option>Ramban</option>
+                <option>Reasi</option><option>Samba</option><option>Shopian</option>
+                <option>Srinagar</option><option>Udhampur</option>
+            </select>
+
+            <label>Date of Birth</label>
+            <input type="date" id="userDob" required>
+
+            <button type="submit" class="btn-reg" id="submitBtn">Generate Official ID</button>
+        </form>
+    </div>
+
+    <div id="idDisplay">
+        <div class="id-card-visual" id="idCard">
+            <div class="id-header">JAMMU KASHMIR KHO-KHO ASSOCIATION</div>
+            
+            <div class="id-content">
+                <div class="photo-box">
+                    <img id="cardImg" src="" alt="Athlete">
+                </div>
+                <div class="info-box">
+                    <div><span>NAME:</span> <b class="val" id="resName"></b></div>
+                    <div><span>DISTRICT:</span> <b class="val" id="resDist"></b></div>
+                    <div><span>DOB:</span> <b class="val" id="resDob"></b></div>
+                    <div style="margin-top:10px; font-size:9px; color:var(--jk-blue);">UT LEVEL REGISTERED ATHLETE</div>
+                </div>
+                <div id="qrcode"></div>
+                <div class="reg-no" id="resID"></div>
+            </div>
+
+            <div class="sig-container">
+                <div class="sig-box">ATHLETE SIGNATURE</div>
+                <div class="sig-box">GENERAL SECRETARY</div>
+            </div>
+        </div>
+        
+        <button onclick="window.print()" class="btn-reg no-print" style="background:#444;">Print Athlete ID Card</button>
+        <button onclick="location.reload()" class="btn-reg no-print" style="background:#999; margin-top:10px;">New Registration</button>
+    </div>
+</div>
+
+<script>
+    const mainForm = document.getElementById('mainForm');
+
+    mainForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        document.getElementById('submitBtn').disabled = true;
+
+        const name = document.getElementById('userName').value;
+        const dist = document.getElementById('userDist').value;
+        const dob = document.getElementById('userDob').value;
+        const photoFile = document.getElementById('userPhoto').files[0];
+        const uniqueID = "JKKKA/2026/" + Math.floor(1000 + Math.random() * 9000);
+
+        // 1. Send text data to Association Email
+        fetch("https://formspree.io/f/pankajmalhotra30@gmail.com", {
+            method: "POST",
+            body: JSON.stringify({ ID: uniqueID, Name: name, District: dist, DOB: dob }),
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
+        }).finally(() => {
+            // 2. Generate QR Code
+            document.getElementById("qrcode").innerHTML = ""; // Clear old QR
+            new QRCode(document.getElementById("qrcode"), {
+                text: `Verified: ${name} | ID: ${uniqueID}`,
+                width: 60,
+                height: 60
+            });
+
+            // 3. Process Photo
+            const reader = new FileReader();
+            reader.onload = (e) => document.getElementById('cardImg').src = e.target.result;
+            reader.readAsDataURL(photoFile);
+
+            // 4. Update ID Card
+            document.getElementById('resName').innerText = name;
+            document.getElementById('resDist').innerText = dist;
+            document.getElementById('resDob').innerText = dob;
+            document.getElementById('resID').innerText = uniqueID;
+
+            // 5. Switch Views
+            document.getElementById('formSection').style.display = 'none';
+            document.getElementById('idDisplay').style.display = 'block';
+        });
+    });
+</script>
+
+</body>
+</html>
