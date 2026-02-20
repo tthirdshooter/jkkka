@@ -84,7 +84,7 @@
 
 
             <label>KKFI UID</label>
-            <input type="text" id="kkfiuid" required>
+            <input type="text" id="userkkfiuid" required>
             <button type="submit" class="btn-reg" id="submitBtn">Generate Official ID</button>
         </form>
     </div>
@@ -101,7 +101,7 @@
                     <div><span>NAME:</span> <b class="val" id="resName"></b></div>
                     <div><span>DISTRICT:</span> <b class="val" id="resDist"></b></div>
                     <div><span>DOB:</span> <b class="val" id="resDob"></b></div>
-                    <div><span>KKFIUID:</span> <b class="val" id="kkfiuid"></b></div>
+                    <div><span>KKFIUID:</span> <b class="val" id="reskkfiuid"></b></div>
                     <div style="margin-top:10px; font-size:9px; color:var(--jk-blue);">UT LEVEL REGISTERED ATHLETE</div>
                 </div>
                 <div id="qrcode"></div>
@@ -129,6 +129,7 @@
         const name = document.getElementById('userName').value;
         const dist = document.getElementById('userDist').value;
         const dob = document.getElementById('userDob').value;
+        const kkfiuid = document.getElementById('userkkfiuid').value;
         const photoFile = document.getElementById('userPhoto').files[0];
         const uniqueID = "JKKKA/2026/" + Math.floor(1000 + Math.random() * 9000);
 
@@ -155,6 +156,7 @@
             document.getElementById('resName').innerText = name;
             document.getElementById('resDist').innerText = dist;
             document.getElementById('resDob').innerText = dob;
+            document.getElementById('reskkfiuid').innerText = kkfiuid;
             document.getElementById('resID').innerText = uniqueID;
 
             // 5. Switch Views
@@ -167,4 +169,5 @@
 </body>
 
 </html>
+
 
