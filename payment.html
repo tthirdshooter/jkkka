@@ -121,7 +121,7 @@
         const uniqueID = "JKKKA/" + Math.floor(100000 + Math.random() * 900000);
 
         // Send to Email
-        fetch("https://formspree.io/f/jkkhokho@gmail.com", {
+  /*      fetch("https://formspree.io/f/jkkhokho@gmail.com", {
             method: "POST",
             body: JSON.stringify({
                 Name: name,
@@ -145,10 +145,51 @@
             document.getElementById('formSection').style.display = 'none';
             document.getElementById('idDisplay').style.display = 'block';
         });
+    }); */
+// This replaces the old fetch section in your code
+const registrationData = {
+    RegID: uniqueID,
+    Name: name,
+    District: dist,
+    DOB: dob,
+    UTR_No: utr,
+    Date_Registered: new Date().toLocaleDateString()
+};
+
+// 1. Send data to Google Sheets (via SheetDB)
+fetch("YOUR_SHEETDB_API_URL", {
+    method: "POST",
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        data: [registrationData]
+    })
+})
+.then(response => response.json())
+.then(data => {
+    console.log('Success:', data);
+    
+    // 2. Also send a backup to your Email (Formspree)
+    return fetch("https://formspree.io/f/your@email.com", {
+        method: "POST",
+        body: JSON.stringify(registrationData),
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
     });
+})
+.finally(() => {
+    // 3. Generate the ID Card for the user
+    generateIDCard(name, dist, dob, uniqueID, photoFile);
+});
+
+ });
+
+    
 </script>
 </body>
 
 </html>
+
 
 
