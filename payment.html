@@ -157,7 +157,7 @@ const registrationData = {
 };
 
 // 1. Send data to Google Sheets (via SheetDB)
-fetch("YOUR_SHEETDB_API_URL", {
+fetch("https://sheetdb.io/api/v1/595tx89mx3za1", {
     method: "POST",
     headers: {
         'Accept': 'application/json',
@@ -172,7 +172,7 @@ fetch("YOUR_SHEETDB_API_URL", {
     console.log('Success:', data);
     
     // 2. Also send a backup to your Email (Formspree)
-    return fetch("https://formspree.io/f/your@email.com", {
+    return fetch("https://formspree.io/f/pankajjmalhhotra@gmail.com", {
         method: "POST",
         body: JSON.stringify(registrationData),
         headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
@@ -190,6 +190,7 @@ fetch("YOUR_SHEETDB_API_URL", {
 </body>
 
 </html>
+
 
 
 
