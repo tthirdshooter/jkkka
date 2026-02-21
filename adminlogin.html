@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JKKKA Admin - Secure Search</title>
+    <style>
+        :root { --jk-blue: #003366; --jk-red: #c62828; --teal: #1abc9c; }
+        body { font-family: 'Segoe UI', sans-serif; background: #2c3e50; color: white; display: flex; justify-content: center; padding: 40px 20px; }
+        .admin-container { width: 100%; max-width: 500px; background: #34495e; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: center; }
+        
+        /* Login Overlay */
+        #loginBox { display: block; }
+        
+        /* Search Area (Hidden by default) */
+        #searchArea { display: none; }
+
+        h2 { margin-top: 0; color: var(--teal); }
+        input { width: 100%; padding: 12px; margin: 15px 0; border: none; border-radius: 5px; font-size: 16px; outline: none; box-sizing: border-box; }
+        .btn { background: var(--teal); color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; font-size: 16px; transition: 0.3s; }
+        .btn:hover { background: #16a085; }
+        .btn-red { background: var(--jk-red); margin-top: 10px; }
+
+        #resultDisplay { display: none; margin-top: 25px; background: white; color: #333; padding: 20px; border-radius: 10px; text-align: left; border-left: 8px solid var(--teal); }
+        .error { color: #ff7675; font-weight: bold; margin-top: 10px; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="admin-container">
+    <div id="loginBox">
+        <h2>Admin Login</h2>
+        <p>Enter Association Password to Access Records</p>
+        <input type="password" id="adminPass" placeholder="Enter Admin Password">
+        <button class="btn" onclick="checkPassword()">Login</button>
+        <div id="loginError" class="error">Incorrect Password. Access Denied.</div>
+    </div>
+
+    <div id="searchArea">
+        <h2>Athlete Verification</h2>
+        <p>Search by Registration ID</p>
+        <input type="text" id="searchInput" placeholder="Example: JKKKA/2026/4582">
+        <button class="btn" id="searchBtn" onclick="searchAthlete()">Search Database</button>
+        <button class="btn btn-red" onclick="location.reload()">Logout</button>
+
+        <div id="searchError" class="error">No record found with that ID.</div>
+
+        <div id="resultDisplay">
+            <p><strong>Status:</strong> <span style="color:green; font-weight:bold;">VERIFIED</span></p>
+            <p><strong>Name:</strong> <span id="resName"></span></p>
+            <p><strong>District:</strong> <span id="resDist"></span></p>
+            <p><strong>UTR/Trans ID:</strong> <span id="resUtr"></span></p>
+            <p><strong>Reg Date:</strong> <span id="resDate"></span></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // CHANGE YOUR PASSWORD HERE
+    const SECRET_PASSWORD = "JKKKA2026"; 
+
+    function checkPassword() {
+        const pass = document.getElementById('adminPass').value;
+        if(pass === SECRET_PASSWORD) {
+            document.getElementById('loginBox').style.display = 'none';
+            document.getElementById('searchArea').style.display = 'block';
+        } else {
+            document.getElementById('loginError').style.display = 'block';
+        }
+    }
+
+    async function searchAthlete() {
+        const query = document.getElementById('searchInput').value.trim();
+        const btn = document.getElementById('searchBtn');
+        const resDisplay = document.getElementById('resultDisplay');
+        const errDisplay = document.getElementById('searchError');
+
+        if (!query) return;
+
+        btn.innerText = "Searching...";
+        btn.disabled = true;
+        resDisplay.style.display = 'none';
+        errDisplay.style.display = 'none';
+
+        // REPLACE WITH YOUR SHEETDB API URL
+        const SHEETDB_URL = "https://docs.google.com/spreadsheets/d/1RYsBsULaNSauB6NuY0tcqqHJh8nBNdQR5yMArMPU9t4/edit#gid=0";
+
+        try {
+            const response = await fetch(`${SHEETDB_URL}/search?RegID=${query}`);
+            const data = await response.json();
+
+            if (data.length > 0) {
+                const athlete = data[0];
+                document.getElementById('resName').innerText = athlete.Name;
+                document.getElementById('resDist').innerText = athlete.District;
+                document.getElementById('resUtr').innerText = athlete.UTR_No;
+                document.getElementById('resDate').innerText = athlete.Date_Registered;
+                resDisplay.style.display = 'block';
+            } else {
+                errDisplay.style.display = 'block';
+            }
+        } catch (error) {
+            alert("Database Error. Check your SheetDB API link.");
+        } finally {
+            btn.innerText = "Search Database";
+            btn.disabled = false;
+        }
+    }
+</script>
+
+</body>
+</html>
