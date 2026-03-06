@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>J&K Kho Kho Association | Official Portal</title>
     <style>
-
-        a { text-decoration: none; }
         :root {
             --jk-blue: #003366;
             --sport-red: #d90429;
@@ -14,25 +12,65 @@
             --text-dark: #2d3436;
             --accent-gold: #f1c40f;
         }
-{ text-decoration: none; }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        a { text-decoration: none; }
         body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; background: #f0f2f5; color: var(--text-dark); scroll-behavior: smooth; }
 
         /* Navigation */
-        nav { background: var(--jk-blue); padding: 15px 5%; position: fixed; width: 100%; top: 0; z-index: 1000; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        nav { background: var(--jk-blue); padding: 15px 5%; position: fixed; width: 100%; top: 0; z-index: 2000; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
         .logo-box { display: flex; align-items: center; gap: 12px; color: white; }
         .logo-circle { width: 45px; height: 45px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--jk-blue); border: 2px solid var(--sport-red); }
         .logo-text b { display: block; font-size: 1.1rem; letter-spacing: 1px; }
         .logo-text span { font-size: 0.7rem; text-transform: uppercase; color: #ccc; }
 
-        nav ul { display: flex; list-style: none; gap: 20px; }
-        nav ul li a { color: white; text-decoration: none; font-size: 0.85rem; font-weight: 500; text-transform: uppercase; transition: 0.3s; }
+        nav ul { display: flex; list-style: none; gap: 15px; align-items: center; }
+        nav ul li a { color: white; font-size: 0.75rem; font-weight: 500; text-transform: uppercase; transition: 0.3s; padding: 5px 8px; }
         nav ul li a:hover { color: var(--accent-gold); }
 
-        /* Hero Section */
-        .hero { height: 60vh; background: linear-gradient(rgba(0,51,102,0.7), rgba(0,51,102,0.7)), url('https://raw.githubusercontent.com/tthirdshooter/jkkka/main/image/jkstate4.jpeg'); background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; margin-top: 60px; }
-        .hero h1 { font-size: 3rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
-        .hero p { font-size: 1.2rem; background: var(--sport-red); padding: 5px 20px; margin-top: 10px; border-radius: 50px; }
+        /* --- PHOTO SLIDER --- */
+        .slider-container {
+            position: relative;
+            width: 100%;
+            height: 65vh;
+            margin-top: 75px;
+            overflow: hidden;
+            background: #000;
+        }
+        .slide {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .slide.active { opacity: 1; z-index: 1; }
+        .slide img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            filter: brightness(45%);
+        }
+        .slide-content {
+            position: absolute;
+            color: white;
+            text-align: center;
+            z-index: 10;
+            padding: 0 20px;
+        }
+        .slide-content h1 { font-size: clamp(1.5rem, 5vw, 3rem); text-shadow: 2px 2px 4px rgba(0,0,0,0.5); text-transform: uppercase; }
+        .slide-content p { font-size: 1.1rem; background: var(--sport-red); padding: 5px 20px; margin-top: 15px; border-radius: 50px; display: inline-block; }
+
+        /* Slider Controls */
+        .arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.1); color: white; border: none; padding: 15px; cursor: pointer; z-index: 100; font-size: 1.5rem; transition: 0.3s; }
+        .arrow:hover { background: var(--sport-red); }
+        .prev { left: 0; border-radius: 0 5px 5px 0; }
+        .next { right: 0; border-radius: 5px 0 0 5px; }
+
+        .dots-container { position: absolute; bottom: 20px; width: 100%; display: flex; justify-content: center; gap: 10px; z-index: 100; }
+        .dot { width: 12px; height: 12px; background: rgba(255,255,255,0.4); border-radius: 50%; cursor: pointer; }
+        .dot.active { background: var(--accent-gold); width: 30px; border-radius: 10px; }
 
         /* Section Styling */
         section { padding: 80px 8% 40px; }
@@ -40,29 +78,24 @@
         .section-title h2 { font-size: 2rem; color: var(--jk-blue); text-transform: uppercase; }
         .section-title::after { content: ''; position: absolute; left: 0; bottom: -10px; width: 60px; height: 4px; background: var(--sport-red); }
 
-        /* History Content */
         .history-card { background: white; padding: 30px; border-radius: 8px; border-left: 8px solid var(--jk-blue); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
 
-        /* Tournament Table */
         .table-container { overflow-x: auto; background: white; padding: 20px; border-radius: 8px; }
         table { width: 100%; border-collapse: collapse; }
         th { background: var(--jk-blue); color: white; padding: 15px; text-align: left; font-size: 0.9rem; }
         td { padding: 12px 15px; border-bottom: 1px solid #eee; font-size: 0.9rem; }
         .status-upcoming { color: #27ae60; font-weight: bold; }
 
-        /* Player Grid */
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
         .card { background: white; padding: 20px; text-align: center; border-radius: 8px; border-bottom: 4px solid var(--sport-red); transition: 0.3s; }
         .card:hover { transform: translateY(-5px); }
-        .card img { width: 80px; height: 80px; background: #ddd; border-radius: 50%; margin-bottom: 15px; }
+        .card img { width: 80px; height: 80px; background: #ddd; border-radius: 50%; margin-bottom: 15px; object-fit: cover; }
 
-        /* Gallery */
         .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
         .gallery-item { height: 200px; background: #ccc; border-radius: 8px; overflow: hidden; position: relative; }
         .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
         .gallery-item .label { position: absolute; bottom: 0; background: rgba(0,0,0,0.7); color: white; width: 100%; padding: 5px; font-size: 0.75rem; text-align: center; }
 
-        /* Contact Form */
         .contact-flex { display: grid; grid-template-columns: 1fr 2fr; gap: 40px; }
         .info-box { background: var(--jk-blue); color: white; padding: 30px; border-radius: 8px; }
         form input, form textarea { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; }
@@ -70,9 +103,8 @@
 
         footer { background: #111; color: white; text-align: center; padding: 30px; margin-top: 40px; }
 
-        @media (max-width: 768px) {
+        @media (max-width: 992px) {
             nav ul { display: none; }
-            .hero h1 { font-size: 2rem; }
             .contact-flex { grid-template-columns: 1fr; }
         }
     </style>
@@ -91,19 +123,43 @@
             <li><a href="#history">History</a></li>
             <li><a href="#tournaments">Tournaments</a></li>
             <li><a href="#players">Players</a></li>
-            <li><a href="#achievements">Achievements</a></li>
-             <li><a href="district.html"> Affiliated Districts </a></li>
+            <li><a href="district.html">Districts</a></li>
             <li><a href="gallery.html">Gallery</a></li>
             <li><a href="#contact">Contact</a></li>
-            <li><a href="jkp.html">2nd All India Police KhoKho Tournament 2026 </li>
-            <li><a href="">Registration Form</li>
+            <li><a href="jkp.html" style="color: var(--accent-gold);">Police Meet 2026</a></li>
         </ul>
     </nav>
 
-    <header class="hero">
-        <h1>Building Champions in the Jammu & Kashmir</h1>
-        <p>Official Home of Jammu & Kashmir Kho Kho</p>
-    </header>
+    <div class="slider-container">
+        <button class="arrow prev" onclick="moveSlide(-1)">&#10094;</button>
+        <button class="arrow next" onclick="moveSlide(1)">&#10095;</button>
+
+        <div class="slide active">
+            <img src="https://raw.githubusercontent.com/tthirdshooter/jkkka/main/image/jkstate4.jpeg" alt="State Championship">
+            <div class="slide-content">
+                <h1>Building Champions in Jammu & Kashmir</h1>
+                <p>Official Home of Jammu & Kashmir Kho Kho</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <img src="https://raw.githubusercontent.com/tthirdshooter/jkkka/main/image/srnational.jpeg" alt="National Meet">
+            <div class="slide-content">
+                <h1>National Level Excellence</h1>
+                <p>Proudly Representing the UT at All India Levels</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <img src="https://raw.githubusercontent.com/tthirdshooter/jkkka/main/image/k1.jpeg" alt="Action Shot">
+            <div class="slide-content">
+                <h1>Nurturing Grassroot Talent</h1>
+                <p>Developing Stars from Every District</p>
+            </div>
+        </div>
+
+        <div class="dots-container" id="dotsContainer"></div>
+    </div>
 
     <section id="history">
         <div class="section-title"><h2>Our History</h2></div>
@@ -134,14 +190,13 @@
                     </tr>
                     <tr>
                         <td>2nd All India Police Meet</td>
-                        <td>Green Play Field Ground,Gandhi Nagar , Jammu (J&K)</td>
+                        <td>Green Play Field Ground, Gandhi Nagar</td>
                         <td>8th March 2026</td>
-                        <td>  <li><a href="jkp.html">2nd All India Police KhoKho Tournament 2026 </li></td>
-                        <td class="status-upcoming">Scheduled</td>
+                        <td><a href="jkp.html" style="color: var(--sport-red); font-weight: bold;">View Details</a></td>
                     </tr>
                     <tr>
                         <td>Selection Trials (Khelo India)</td>
-                        <td>Green Play Field Ground,Gandhi Nagar , Jammu (J&K)</td>
+                        <td>Green Play Field Ground, Jammu</td>
                         <td>June 2026</td>
                         <td>TBA</td>
                     </tr>
@@ -176,11 +231,11 @@
         <div class="grid">
             <div style="padding: 20px; border: 1px solid rgba(255,255,255,0.2);">
                 <h1 style="color: var(--accent-gold);">15+</h1>
-                <p>Medals in InterNational Championships</p>
+                <p>Medals in International Championships</p>
             </div>
             <div style="padding: 20px; border: 1px solid rgba(255,255,255,0.2);">
                 <h1 style="color: var(--accent-gold);">5000+</h1>
-                <p>Registered  Athletes</p>
+                <p>Registered Athletes</p>
             </div>
             <div style="padding: 20px; border: 1px solid rgba(255,255,255,0.2);">
                 <h1 style="color: var(--accent-gold);">Top 8</h1>
@@ -221,8 +276,51 @@
     </section>
 
     <footer>
-        <p>&copy; 2026 Jammu & Kashmir Kho Kho Association. Affiliated with KKFI , J&K Sports Council.</p>
+        <p>&copy; 2026 J&K Kho Kho Association. Affiliated with KKFI & J&K Sports Council.</p>
     </footer>
 
+    <script>
+        let slideIndex = 0;
+        const slides = document.querySelectorAll('.slide');
+        const dotsContainer = document.getElementById('dotsContainer');
+
+        // Create dots
+        slides.forEach((_, i) => {
+            const dot = document.createElement('div');
+            dot.classList.add('dot');
+            if (i === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => currentSlide(i));
+            dotsContainer.appendChild(dot);
+        });
+
+        const dots = document.querySelectorAll('.dot');
+
+        function showSlides(n) {
+            if (n >= slides.length) slideIndex = 0;
+            if (n < 0) slideIndex = slides.length - 1;
+            
+            slides.forEach(s => s.classList.remove('active'));
+            dots.forEach(d => d.classList.remove('active'));
+            
+            slides[slideIndex].classList.add('active');
+            dots[slideIndex].classList.add('active');
+        }
+
+        function moveSlide(n) {
+            slideIndex += n;
+            showSlides(slideIndex);
+        }
+
+        function currentSlide(n) {
+            slideIndex = n;
+            showSlides(slideIndex);
+        }
+
+        // Auto-slide every 5 seconds
+        setInterval(() => {
+            slideIndex++;
+            showSlides(slideIndex);
+        }, 5000);
+    </script>
 </body>
 </html>
